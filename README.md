@@ -62,10 +62,12 @@ A web-based application to track worked days (by location), vacation days, and t
 2.  Use the form to add new entries:
     *   Select a **Start Date**.
     *   Optionally, select an **End Date** if logging a range of days. If not selected, it defaults to the Start Date.
-    *   Choose the **Type** of entry (Work, Vacation, or Traveling).
-    *   If "Work" is selected, provide a **Location**. The location field will appear/disappear and become required/not required based on your selection.
+    *   Choose the **Type** of entry: "Work Land", "Work Ship", "Vacation", or "Traveling".
+    *   If "Work Land" is selected, a "Country" field will appear. Select or type to filter and choose a country. This field is required.
+    *   If "Work Ship" is selected, a "Ship Name" field will appear. Enter the name of the ship. This field is required.
+    *   The "Country" and "Ship Name" fields are hidden for "Vacation" and "Traveling" types.
     *   Click "Add Entry".
-3.  View the updated summaries and the log of all entries on the page.
+3.  View the updated summaries and the log of all entries on the page. The "Location" column in summaries and logs will show the Country for "Work Land" entries or the Ship Name for "Work Ship" entries.
 
 ## Project Structure
 
