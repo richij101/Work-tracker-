@@ -9,19 +9,27 @@ def index():
         start_date_str = request.form.get('start_date')
         end_date_str = request.form.get('end_date')
         entry_type = request.form.get('entry_type')
-        location = request.form.get('location', None) # Optional, get '' if not present
 
-        # Basic Validation
+        location_detail = None # This will store country or ship name
+
+        # Validation for start_date and entry_type
         if not start_date_str or not entry_type:
-            flash('Start date and entry type are required.', 'error')
+            flash('Start date and a valid entry type are required.', 'error')
             return redirect(url_for('index'))
 
-        if entry_type == 'work' and not location:
-            flash('Location is required for "Work" entries.', 'error')
+        if entry_type == 'work_land':
+            location_detail = request.form.get('country')
+            if not location_detail:
+                flash('Country is required for "Work Land" entries.', 'error')
+                return redirect(url_for('index'))
+        elif entry_type == 'work_ship':
+            location_detail = request.form.get('ship_name')
+            if not location_detail:
+                flash('Ship Name is required for "Work Ship" entries.', 'error')
+                return redirect(url_for('index'))
+        elif entry_type not in ['vacation', 'travel']:
+            flash('Invalid entry type selected.', 'error')
             return redirect(url_for('index'))
-
-        if entry_type != 'work': # Ensure location is null if not a work entry
-            location = None
 
         try:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
@@ -44,7 +52,7 @@ def index():
             new_entry = TimeEntry(
                 entry_date=current_date,
                 entry_type=entry_type,
-                location=location if entry_type == 'work' else None
+                location=location_detail # This now holds country or ship_name, or None
             )
             db.session.add(new_entry)
             current_date += timedelta(days=1)
@@ -67,9 +75,9 @@ def index():
     work_days_by_location = {}
 
     for entry in entries:
-        if entry.entry_type == 'work':
+        if entry.entry_type == 'work_land' or entry.entry_type == 'work_ship':
             total_worked_days += 1
-            if entry.location: # Should always be true for work, but good practice
+            if entry.location: # Location now stores country or ship name
                 work_days_by_location[entry.location] = work_days_by_location.get(entry.location, 0) + 1
         elif entry.entry_type == 'vacation':
             total_vacation_days += 1

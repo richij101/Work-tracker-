@@ -54,15 +54,33 @@
             <div>
                 <label for="entry_type">Type:</label>
                 <select id="entry_type" name="entry_type" required>
-                    <option value="work">Work</option>
+                    <option value="">-- Select Type --</option>
+                    <option value="work_land">Work Land</option>
+                    <option value="work_ship">Work Ship</option>
                     <option value="vacation">Vacation</option>
                     <option value="travel">Traveling</option>
                 </select>
             </div>
-            <div class="location-input" id="location_field">
+
+            <div class="location-input" id="country_field" style="display:none;">
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" list="country_list">
+                <datalist id="country_list">
+                    <!-- Countries will be populated here by the script, or could be hardcoded -->
+                    <!-- Example: <option value="United States"> -->
+                </datalist>
+            </div>
+
+            <div class="location-input" id="ship_name_field" style="display:none;">
+                <label for="ship_name">Ship Name:</label>
+                <input type="text" id="ship_name" name="ship_name">
+            </div>
+
+            <!-- This original location field is now replaced by country_field and ship_name_field -->
+            <!-- <div class="location-input" id="location_field">
                 <label for="location">Location (if Work):</label>
                 <input type="text" id="location" name="location">
-            </div>
+            </div> -->
             <div>
                 <input type="submit" value="Add Entry">
             </div>
@@ -114,7 +132,7 @@
                     {% for entry in entries %}
                     <tr>
                         <td>{{ entry.entry_date.strftime('%Y-%m-%d') }}</td>
-                        <td>{{ entry.entry_type | capitalize }}</td>
+                        <td>{{ entry.entry_type.replace('_', ' ') | title }}</td>
                         <td>{{ entry.location if entry.location else 'N/A' }}</td>
                     </tr>
                     {% endfor %}
@@ -126,24 +144,72 @@
     </div>
 
     <script>
-        // Basic JavaScript to show/hide location field based on entry type
-        // This will be improved when adding the date picker library
         const entryTypeSelect = document.getElementById('entry_type');
-        const locationField = document.getElementById('location_field');
+        const countryField = document.getElementById('country_field');
+        const countryInput = document.getElementById('country');
+        const shipNameField = document.getElementById('ship_name_field');
+        const shipNameInput = document.getElementById('ship_name');
+        const countryDataList = document.getElementById('country_list');
 
-        function toggleLocationField() {
-            if (entryTypeSelect.value === 'work') {
-                locationField.style.display = 'block';
-                document.getElementById('location').required = true;
-            } else {
-                locationField.style.display = 'none';
-                document.getElementById('location').required = false;
-                document.getElementById('location').value = ''; // Clear location if not work
+        const countries = [
+            "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
+            "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+            "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the", "Congo, Republic of the", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic",
+            "Denmark", "Djibouti", "Dominica", "Dominican Republic",
+            "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia",
+            "Fiji", "Finland", "France",
+            "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana",
+            "Haiti", "Honduras", "Hungary",
+            "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Ivory Coast",
+            "Jamaica", "Japan", "Jordan",
+            "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kosovo", "Kuwait", "Kyrgyzstan",
+            "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
+            "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar",
+            "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway",
+            "Oman",
+            "Pakistan", "Palau", "Palestine State", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
+            "Qatar",
+            "Romania", "Russia", "Rwanda",
+            "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria",
+            "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu",
+            "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan",
+            "Vanuatu", "Vatican City", "Venezuela",
+            "Vietnam",
+            "Yemen",
+            "Zambia", "Zimbabwe"
+        ];
+
+        countries.forEach(function(country) {
+            const option = document.createElement('option');
+            option.value = country;
+            countryDataList.appendChild(option);
+        });
+
+        function toggleSpecificLocationFields() {
+            const selectedType = entryTypeSelect.value;
+
+            // Hide all and remove required attribute first
+            countryField.style.display = 'none';
+            countryInput.required = false;
+            shipNameField.style.display = 'none';
+            shipNameInput.required = false;
+
+            // Clear values when type changes
+            countryInput.value = '';
+            shipNameInput.value = '';
+
+            if (selectedType === 'work_land') {
+                countryField.style.display = 'block';
+                countryInput.required = true;
+            } else if (selectedType === 'work_ship') {
+                shipNameField.style.display = 'block';
+                shipNameInput.required = true;
             }
         }
-        entryTypeSelect.addEventListener('change', toggleLocationField);
-        // Initial check on page load
-        toggleLocationField();
+
+        entryTypeSelect.addEventListener('change', toggleSpecificLocationFields);
+        // Initial check on page load (e.g. if form is re-rendered with a value)
+        toggleSpecificLocationFields();
 
         // Initialize Flatpickr
         flatpickr("#start_date", {
