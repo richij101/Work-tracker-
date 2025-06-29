@@ -64,7 +64,7 @@ def index():
         return redirect(url_for('index'))
 
     # For GET request, fetch entries and calculate summaries
-    entries = TimeEntry.query.order_by(TimeEntry.entry_date.desc()).all()
+    entries = TimeEntry.query.order_by(TimeEntry.start_date.desc()).all()
 
     total_worked_days = 0
     total_vacation_days = 0
