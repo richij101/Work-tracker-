@@ -8,10 +8,11 @@ A web-based application to track worked days (by location), vacation days, and t
 *   Categorize entries as "Work Land" (with Country), "Work Ship" (with Ship Name), "Vacation", or "Traveling".
 *   Country input for "Work Land" is a filterable dropdown.
 *   View summaries:
-    *   Total worked days (calculated from date ranges).
-    *   Total vacation days (calculated from date ranges).
-    *   Total travel days (calculated from date ranges).
-    *   Breakdown of worked days by location (Country or Ship Name).
+    *   Total Worked Days - Land (calculated from date ranges).
+    *   Total Worked Days - Ship (calculated from date ranges).
+    *   Total Vacation Days (calculated from date ranges).
+    *   Total Travel Days (calculated from date ranges).
+    *   Breakdown of "Work Land" days by Country.
 *   View a log of all entries, showing date ranges.
 *   Edit existing entries.
 *   Delete existing entries (with confirmation).
@@ -71,10 +72,11 @@ A web-based application to track worked days (by location), vacation days, and t
     *   If "Work Land" is selected, a "Country" field will appear. Select or type to filter and choose a country. This field is required.
     *   If "Work Ship" is selected, a "Ship Name" field will appear. Enter the name of the ship. This field is required.
     *   Click "Add Entry". Each submission creates a single entry, even for date ranges.
-3.  **Viewing Entries:**
+3.  **Viewing Entries & Summaries:**
     *   The log displays entries with their date ranges.
-    *   Summaries calculate total days based on the duration of these entered ranges.
-    *   The "Location" column in summaries and logs will show the Country for "Work Land" entries or the Ship Name for "Work Ship" entries.
+    *   Summaries provide totals for "Worked Days - Land", "Worked Days - Ship", "Vacation Days", and "Travel Days".
+    *   A specific breakdown table shows "Work Land Days by Country".
+    *   The "Location/Details" column in the main log will show the Country for "Work Land" entries or the Ship Name for "Work Ship" entries.
 4.  **Editing Entries:**
     *   Click the "Edit" button next to an entry in the log.
     *   You will be taken to an edit page with the entry's details pre-filled.

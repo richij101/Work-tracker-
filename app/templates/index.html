@@ -108,30 +108,31 @@
 
         <h2>Summary</h2>
         {% if summaries %}
-            <p><strong>Total Worked Days:</strong> {{ summaries.total_worked_days }}</p>
+            <p><strong>Total Worked Days - Land:</strong> {{ summaries.total_work_land_days }}</p>
+            <p><strong>Total Worked Days - Ship:</strong> {{ summaries.total_work_ship_days }}</p>
             <p><strong>Total Vacation Days:</strong> {{ summaries.total_vacation_days }}</p>
             <p><strong>Total Travel Days:</strong> {{ summaries.total_travel_days }}</p>
 
-            {% if summaries.work_days_by_location %}
-                <h3>Work Days by Location:</h3>
+            {% if summaries.work_land_days_by_country %}
+                <h3>Work Land Days by Country:</h3>
                 <table>
                     <thead>
                         <tr>
-                            <th>Location</th>
+                            <th>Country</th>
                             <th>Days</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for location, days in summaries.work_days_by_location.items() %}
+                        {% for country, days in summaries.work_land_days_by_country.items() %}
                         <tr>
-                            <td>{{ location }}</td>
+                            <td>{{ country }}</td>
                             <td>{{ days }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <p>No work days recorded by location yet.</p>
+                <p>No Work Land days recorded by country yet.</p>
             {% endif %}
         {% else %}
             <p>No summary data available.</p>

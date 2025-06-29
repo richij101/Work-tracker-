@@ -66,29 +66,34 @@ def index():
     # For GET request, fetch entries and calculate summaries
     entries = TimeEntry.query.order_by(TimeEntry.start_date.desc()).all()
 
-    total_worked_days = 0
+    total_work_land_days = 0
+    total_work_ship_days = 0
     total_vacation_days = 0
     total_travel_days = 0
-    work_days_by_location = {} # Stores total days (duration) per location
+    work_land_days_by_country = {} # Specific for work_land entries
 
     for entry in entries:
         # Calculate duration of the entry
         duration = (entry.end_date - entry.start_date).days + 1
 
-        if entry.entry_type == 'work_land' or entry.entry_type == 'work_ship':
-            total_worked_days += duration
-            if entry.location: # Location now stores country or ship name
-                work_days_by_location[entry.location] = work_days_by_location.get(entry.location, 0) + duration
+        if entry.entry_type == 'work_land':
+            total_work_land_days += duration
+            if entry.location: # Location stores country
+                work_land_days_by_country[entry.location] = work_land_days_by_country.get(entry.location, 0) + duration
+        elif entry.entry_type == 'work_ship':
+            total_work_ship_days += duration
+            # Ship work days are not added to work_land_days_by_country
         elif entry.entry_type == 'vacation':
             total_vacation_days += duration
         elif entry.entry_type == 'travel':
             total_travel_days += duration
 
     summaries = {
-        'total_worked_days': total_worked_days,
+        'total_work_land_days': total_work_land_days,
+        'total_work_ship_days': total_work_ship_days,
         'total_vacation_days': total_vacation_days,
         'total_travel_days': total_travel_days,
-        'work_days_by_location': work_days_by_location
+        'work_land_days_by_country': work_land_days_by_country
     }
 
     return render_template('index.html', entries=entries, summaries=summaries)
